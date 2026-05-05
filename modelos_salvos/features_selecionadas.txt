@@ -1,0 +1,13 @@
+FEATURES SELECIONADAS PELO RFE
+==================================================
+
+1. Sexo biológico
+2. Idade em anos
+3. Histórico familiar de excesso de peso
+4. Frequência de consumo de vegetais
+5. Número de refeições principais
+6. Consumo de lanches entre refeições
+7. Consumo diário de água
+8. Frequência semanal de atividade física
+9. Tempo diário de uso de eletrônicos
+10. Consumo de bebida alcoólica
