@@ -1,7 +1,7 @@
 {
     "modelo": "Random Forest",
     "tipo": "Classifica\u00e7\u00e3o (Obesidade)",
-    "data_salvamento": "2026-04-27T21:31:30.611960",
+    "data_salvamento": "2026-05-10T17:11:25.306502",
     "features_totais": 10,
     "features_selecionadas": [
         "Sexo biol\u00f3gico",
