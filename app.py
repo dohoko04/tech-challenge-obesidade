@@ -25,7 +25,7 @@ st.markdown("---")
 aba1, aba2 = st.tabs(["🎯 Simulador de Risco", "📊 Visão de Negócio & Insights"])
 
 with aba1:
-    st.subheader("Entrada de Dados do Paciente (Números Inteiros)")
+    st.subheader("Entrada de Dados do Paciente")
     
     with st.form("form_clinico"):
         col1, col2 = st.columns(2)
@@ -34,15 +34,30 @@ with aba1:
             sexo = st.selectbox("1. Sexo Biológico", [0, 1], format_func=lambda x: "Feminino" if x == 0 else "Masculino")
             idade = st.number_input("2. Idade em anos", 14, 80, 25)
             familia = st.selectbox("3. Histórico familiar de excesso de peso", [0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
-            vegetais = st.slider("4. Frequência de consumo de vegetais (1 a 3)", 1, 3, 2)
-            refeicoes = st.slider("5. Número de refeições principais (1 a 4)", 1, 4, 3)
+            
+            # Alterado de Slider para Selectbox
+            vegetais = st.selectbox("4. Frequência de consumo de vegetais", [1, 2, 3], index=1, 
+                                   format_func=lambda x: {1: "Raramente", 2: "Às vezes", 3: "Sempre"}[x])
+            
+            refeicoes = st.selectbox("5. Número de refeições principais", [1, 2, 3, 4], index=2,
+                                    format_func=lambda x: "1 refeição" if x == 1 else (f"{x} refeições" if x < 4 else "Mais de 3 refeições"))
 
         with col2:
-            lanches = st.selectbox("6. Consumo de lanches entre refeições", [0, 1, 2, 3], format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
-            agua = st.slider("7. Consumo diário de água (1 a 3)", 1, 3, 2)
-            atividade = st.slider("8. Frequência semanal de atividade física (0 a 3)", 0, 3, 1)
-            eletronicos = st.slider("9. Tempo diário de uso de eletrônicos (0 a 2)", 0, 2, 1)
-            alcool = st.selectbox("10. Consumo de bebida alcoólica", [0, 1, 2, 3], format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
+            lanches = st.selectbox("6. Consumo de lanches entre refeições", [0, 1, 2, 3], 
+                                  format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
+            
+            # Alterado de Slider para Selectbox
+            agua = st.selectbox("7. Consumo diário de água", [1, 2, 3], index=1,
+                               format_func=lambda x: {1: "Menos de 1L", 2: "Entre 1L e 2L", 3: "Mais de 2L"}[x])
+            
+            atividade = st.selectbox("8. Frequência semanal de atividade física", [0, 1, 2, 3], 
+                                    format_func=lambda x: {0: "Nenhuma", 1: "1 a 2 dias", 2: "2 a 4 dias", 3: "5 ou mais dias"}[x])
+            
+            eletronicos = st.selectbox("9. Tempo diário de uso de eletrônicos", [0, 1, 2], 
+                                      format_func=lambda x: {0: "0-2 horas", 1: "3-5 horas", 2: "Mais de 5 horas"}[x])
+            
+            alcool = st.selectbox("10. Consumo de bebida alcoólica", [0, 1, 2, 3], 
+                                 format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
 
         enviar = st.form_submit_button("Gerar Laudo Preditivo")
 
@@ -69,10 +84,8 @@ with aba2:
     try:
         df = pd.read_csv("Obesity.csv")
         
-        # Métricas de Negócio
         m1, m2, m3 = st.columns(3)
         m1.metric("Pacientes Analisados", len(df))
-        # Ajuste de nomes de colunas comum no dataset de obesidade (Age e CH2O)
         if 'Age' in df.columns:
             m2.metric("Média de Idade", f"{df['Age'].mean():.1f} anos")
         if 'CH2O' in df.columns:
@@ -80,9 +93,7 @@ with aba2:
 
         st.markdown("---")
 
-        # Gráfico de Distribuição
         st.markdown("**Distribuição por Nível de Obesidade na Base**")
-        # Procura a coluna alvo (NObeyesdad é o padrão do dataset)
         col_alvo = 'NObeyesdad' if 'NObeyesdad' in df.columns else 'Obesity'
         
         if col_alvo in df.columns:
