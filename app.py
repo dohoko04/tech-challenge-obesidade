@@ -19,87 +19,58 @@ color_mapping = {
 }
 
 st.set_page_config(page_title="Hospit-AI", layout="wide")
-st.title("🩺 Assistente de Diagnóstico Preditivo - Hospit-AI")
+st.title("🩺 Assistente de Diagnóstico Preditivo")
 st.markdown("---")
 
-aba1, aba2 = st.tabs(["🎯 Simulador de Risco", "📊 Visão de Negócio & Insights"])
-
-with aba1:
-    st.subheader("Entrada de Dados do Paciente")
+st.subheader("Entrada de Dados do Paciente")
     
-    with st.form("form_clinico"):
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            sexo = st.selectbox("1. Sexo Biológico", [0, 1], format_func=lambda x: "Feminino" if x == 0 else "Masculino")
-            idade = st.number_input("2. Idade em anos", 14, 80, 25)
-            familia = st.selectbox("3. Histórico familiar de excesso de peso", [0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
-            
-            # Alterado de Slider para Selectbox
-            vegetais = st.selectbox("4. Frequência de consumo de vegetais", [1, 2, 3], index=1, 
-                                   format_func=lambda x: {1: "Raramente", 2: "Às vezes", 3: "Sempre"}[x])
-            
-            refeicoes = st.selectbox("5. Número de refeições principais", [1, 2, 3, 4], index=2,
-                                    format_func=lambda x: "1 refeição" if x == 1 else (f"{x} refeições" if x < 4 else "Mais de 3 refeições"))
-
-        with col2:
-            lanches = st.selectbox("6. Consumo de lanches entre refeições", [0, 1, 2, 3], 
-                                  format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
-            
-            # Alterado de Slider para Selectbox
-            agua = st.selectbox("7. Consumo diário de água", [1, 2, 3], index=1,
-                               format_func=lambda x: {1: "Menos de 1L", 2: "Entre 1L e 2L", 3: "Mais de 2L"}[x])
-            
-            atividade = st.selectbox("8. Frequência semanal de atividade física", [0, 1, 2, 3], 
-                                    format_func=lambda x: {0: "Nenhuma", 1: "1 a 2 dias", 2: "2 a 4 dias", 3: "5 ou mais dias"}[x])
-            
-            eletronicos = st.selectbox("9. Tempo diário de uso de eletrônicos", [0, 1, 2], 
-                                      format_func=lambda x: {0: "0-2 horas", 1: "3-5 horas", 2: "Mais de 5 horas"}[x])
-            
-            alcool = st.selectbox("10. Consumo de bebida alcoólica", [0, 1, 2, 3], 
-                                 format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
-
-        enviar = st.form_submit_button("Gerar Laudo Preditivo")
-
-    if enviar:
-        entrada = pd.DataFrame([[sexo, idade, familia, vegetais, refeicoes, lanches, agua, atividade, eletronicos, alcool]], 
-                             columns=['Sexo biológico', 'Idade em anos', 'Histórico familiar de excesso de peso', 
-                                      'Frequência de consumo de vegetais', 'Número de refeições principais', 
-                                      'Consumo de lanches entre refeições', 'Consumo diário de água', 
-                                      'Frequência semanal de atividade física', 'Tempo diário de uso de eletrônicos', 
-                                      'Consumo de bebida alcoólica'])
-        
-        resultado_num = modelo.predict(entrada)[0]
-        st.markdown(f"""
-            <div style="padding:30px; border-radius:15px; background-color:{color_mapping[resultado_num]}; margin-top: 20px;">
-                <h2 style="color:white; text-align:center; margin:0;">
-                    Diagnóstico Estimado: {class_mapping[resultado_num]}
-                </h2>
-            </div>
-        """, unsafe_allow_html=True)
-
-with aba2:
-    st.subheader("📊 Análise Exploratória de Dados")
+with st.form("form_clinico"):
+    col1, col2 = st.columns(2)
     
-    try:
-        df = pd.read_csv("Obesity.csv")
+    with col1:
+        sexo = st.selectbox("1. Sexo Biológico", [0, 1], format_func=lambda x: "Feminino" if x == 0 else "Masculino")
+        idade = st.number_input("2. Idade em anos", 14, 80, 25)
+        familia = st.selectbox("3. Histórico familiar de excesso de peso", [0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
         
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Pacientes Analisados", len(df))
-        if 'Age' in df.columns:
-            m2.metric("Média de Idade", f"{df['Age'].mean():.1f} anos")
-        if 'CH2O' in df.columns:
-            m3.metric("Média Consumo Água", f"{df['CH2O'].mean():.1f} L")
-
-        st.markdown("---")
-
-        st.markdown("**Distribuição por Nível de Obesidade na Base**")
-        col_alvo = 'NObeyesdad' if 'NObeyesdad' in df.columns else 'Obesity'
+        # Alterado de Slider para Selectbox
+        vegetais = st.selectbox("4. Frequência de consumo de vegetais", [1, 2, 3], index=1, 
+                               format_func=lambda x: {1: "Raramente", 2: "Às vezes", 3: "Sempre"}[x])
         
-        if col_alvo in df.columns:
-            st.bar_chart(df[col_alvo].value_counts())
-        else:
-            st.warning("Coluna de diagnóstico não encontrada no ficheiro CSV.")
+        refeicoes = st.selectbox("5. Número de refeições principais", [1, 2, 3, 4], index=2,
+                                format_func=lambda x: "1 refeição" if x == 1 else (f"{x} refeições" if x < 4 else "Mais de 3 refeições"))
 
-    except Exception as e:
-        st.error(f"Erro ao carregar os insights: {e}")
+    with col2:
+        lanches = st.selectbox("6. Consumo de lanches entre refeições", [0, 1, 2, 3], 
+                              format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
+        
+        # Alterado de Slider para Selectbox
+        agua = st.selectbox("7. Consumo diário de água", [1, 2, 3], index=1,
+                           format_func=lambda x: {1: "Menos de 1L", 2: "Entre 1L e 2L", 3: "Mais de 2L"}[x])
+        
+        atividade = st.selectbox("8. Frequência semanal de atividade física", [0, 1, 2, 3], 
+                                format_func=lambda x: {0: "Nenhuma", 1: "1 a 2 dias", 2: "2 a 4 dias", 3: "5 ou mais dias"}[x])
+        
+        eletronicos = st.selectbox("9. Tempo diário de uso de eletrônicos", [0, 1, 2], 
+                                  format_func=lambda x: {0: "0-2 horas", 1: "3-5 horas", 2: "Mais de 5 horas"}[x])
+        
+        alcool = st.selectbox("10. Consumo de bebida alcoólica", [0, 1, 2, 3], 
+                             format_func=lambda x: ["Não", "Às vezes", "Frequentemente", "Sempre"][x])
+
+    enviar = st.form_submit_button("Gerar Laudo Preditivo")
+
+if enviar:
+    entrada = pd.DataFrame([[sexo, idade, familia, vegetais, refeicoes, lanches, agua, atividade, eletronicos, alcool]], 
+                         columns=['Sexo biológico', 'Idade em anos', 'Histórico familiar de excesso de peso', 
+                                  'Frequência de consumo de vegetais', 'Número de refeições principais', 
+                                  'Consumo de lanches entre refeições', 'Consumo diário de água', 
+                                  'Frequência semanal de atividade física', 'Tempo diário de uso de eletrônicos', 
+                                  'Consumo de bebida alcoólica'])
+    
+    resultado_num = modelo.predict(entrada)[0]
+    st.markdown(f"""
+        <div style="padding:30px; border-radius:15px; background-color:{color_mapping[resultado_num]}; margin-top: 20px;">
+            <h2 style="color:white; text-align:center; margin:0;">
+                Diagnóstico Estimado: {class_mapping[resultado_num]}
+            </h2>
+        </div>
+    """, unsafe_allow_html=True)
